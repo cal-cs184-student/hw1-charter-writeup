@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 	<head>
+		<title>CS184/284A Fall 2026 Homework 1 Write-Up</title>
 		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=default'></script>
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&amp;display=swap" rel="stylesheet">
 		<style>
 			h1 {
 				text-align: center;
@@ -32,16 +34,11 @@
 
 		<br>
 
-		Link to webpage: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
+		Link to webpage: <a href="https://cal-cs184-student.github.io/hw1-charter-writeup/">https://cal-cs184-student.github.io/hw1-charter-writeup/</a>
 		
 		<br>
 
-		Link to GitHub repository: (TODO) <a href="https://cs184.eecs.berkeley.edu/fa26">cs184.eecs.berkeley.edu/fa26</a>
-
-		<figure>
-			<img src="assets/lion.jpg" alt="Lion" style="width:50%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/hw1-charter-writeup">https://github.com/cal-cs184-student/hw1-charter-writeup</a>
 
 		<!--
 		We've already added one heading per task, to make your write-up as navigable when grading. Please fit your write-up within these sections!
@@ -51,33 +48,102 @@
 		Give a high-level overview of what you implemented in this homework. Think about what you've built as a whole. Share your thoughts on what interesting things you've learned from completing the homework.
 
 		<h2>Task 1: Drawing Single-Color Triangles</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			I rasterize each triangle by sampling pixels at their centers,
+			<code>(x + 0.5, y + 0.5)</code>. For each triangle edge, I use an
+			edge function to determine which side of the edge contains the sample.
+			I first put the vertices in a consistent clockwise order, so a sample
+			is covered when all three edge values are nonnegative. The inclusive
+			comparison also draws samples that lie exactly on an edge. Normalizing
+			the winding allows the same test to work whether the vertices were
+			originally supplied clockwise or counterclockwise.
+		</p>
 
-		<p>Here is an example 2x2 gridlike structure using an HTML table. Each <b>tr</b> is a row and each <b>td</b> is a column in that row. You might find this useful for framing and showing your result images in an organized fashion.</p>
-		<div style="display: flex; flex-direction: column; align-items: center;">
-			<table style="width: 100%; text-align: center; border-collapse: collapse;">
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			  <tr>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-				<td style="text-align: center;">
-				  <img src="assets/lion.jpg" width="400px"/>
-				  <figcaption>Caption goes here.</figcaption>
-				</td>
-			  </tr>
-			</table>
-		</div>
+		<p>
+			I begin with the smallest axis-aligned bounding box containing the
+			triangle and clip that box to the framebuffer. I then process the box
+			one scanline at a time. On each row, the three edge inequalities give
+			me the first and last covered pixel. Since a triangle is convex, every
+			pixel between those endpoints is covered, so I fill that span using
+			<code>fill_pixel()</code>.
+		</p>
+
+		<p>
+			This algorithm is no worse than testing every sample in the bounding
+			box. If the clipped box is <i>W</i> pixels wide and <i>H</i> pixels
+			high, a basic bounding-box implementation performs
+			<code>W * H</code> point-in-triangle tests. My implementation does a
+			constant amount of work for the three edges on each of the <i>H</i>
+			rows and fills <i>K</i> covered pixels, giving
+			<code>O(H + K)</code> work. Since <code>K &lt;= W * H</code>, this
+			avoids point-in-triangle tests for uncovered samples while remaining
+			within the work bound of bounding-box rasterization.
+		</p>
+
+		<figure>
+			<img src="assets/task1-test4-pixel-inspector.png"
+				 alt="basic/test4.svg with the pixel inspector centered on the thin red triangle"
+				 style="width:100%; max-width:1200px"/>
+			<figcaption>
+				<code>basic/test4.svg</code> at the default viewing parameters, with
+				the pixel inspector centered on the edge of the thin red triangle.
+			</figcaption>
+		</figure>
+
+		<h3>Extra Credit: Optimized Triangle Rasterization</h3>
+		<p>
+			Beyond simple bounding-box rasterization, I normalize the winding once
+			per triangle and clip its bounding box before entering the loops. I
+			write each edge function as <code>A*x + B*y + C</code>. Moving down
+			one row then updates its value by adding <code>B</code> instead of
+			recalculating the complete expression. On each row, I solve the three
+			edge inequalities for the covered horizontal span, so the inner loop
+			fills only covered samples rather than testing the entire bounding-box
+			row. I use <code>double</code> for the incremental edge values to avoid
+			accumulated rounding error along shared triangle edges.
+		</p>
+
+		<p>
+			I measured the implementations in a Release build using
+			<code>std::chrono::high_resolution_clock</code>. Each run rasterized
+			the same large, partially offscreen triangle 100 times into a
+			1024-by-1024 sample buffer. The table reports the average time per
+			triangle; it does not include SVG parsing or presentation overhead.
+		</p>
+
+		<table style="width: 100%; border-collapse: collapse;">
+			<thead>
+				<tr>
+					<th style="border: 1px solid #999; padding: 8px; text-align: left;">Implementation</th>
+					<th style="border: 1px solid #999; padding: 8px;">Average time per triangle</th>
+					<th style="border: 1px solid #999; padding: 8px;">Speedup over baseline</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Basic bounding-box sampling</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.980 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.00x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Incremental edges and clipped bounds</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.006 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.97x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Incremental scanline spans</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">0.458 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">4.32x</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>
+			The final scanline implementation took approximately 77% less time
+			than the basic version in this benchmark. Its output matched the
+			supplied reference images for <code>basic/test3.svg</code> through
+			<code>basic/test6.svg</code>.
+		</p>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
