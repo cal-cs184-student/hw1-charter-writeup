@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+     width="500px" height="500px" viewBox="0 0 500 500">
+
+  <!-- ground and motion marks -->
+  <polygon fill="#DDE7F2" points="0,410 500,410 0,500"/>
+  <polygon fill="#DDE7F2" points="0,500 500,410 500,500"/>
+  <polygon fill="#72A5D8" points="55,315 155,310 55,322"/>
+  <polygon fill="#72A5D8" points="55,322 155,310 155,317"/>
+  <polygon fill="#72A5D8" points="25,350 125,345 25,357"/>
+  <polygon fill="#72A5D8" points="25,357 125,345 125,352"/>
+
+  <g transform="translate(250 235)">
+    <!-- Lean the whole upper body forward. -->
+    <g transform="rotate(10)">
+      <!-- torso -->
+      <polygon fill="#3157A4" points="-52,-58 52,-58 -52,58"/>
+      <polygon fill="#3157A4" points="-52,58 52,-58 52,58"/>
+
+      <!-- chest emblem -->
+      <g transform="translate(0 -5)">
+        <g transform="rotate(45)">
+          <g transform="scale(.28 .28)">
+            <polygon fill="#F5C542" points="-50,-50 50,-50 -50,50"/>
+            <polygon fill="#F5C542" points="-50,50 50,-50 50,50"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- head, tilted slightly toward the raised hand -->
+      <g transform="translate(-8 -104)">
+        <g transform="rotate(-12)">
+          <g transform="scale(.58 .58)">
+            <polygon fill="#52C7B8" points="-50,-50 50,-50 -50,50"/>
+            <polygon fill="#52C7B8" points="-50,50 50,-50 50,50"/>
+            <polygon fill="#17324D" points="-25,-8 -8,-8 -25,9"/>
+            <polygon fill="#17324D" points="-25,9 -8,-8 -8,9"/>
+            <polygon fill="#17324D" points="9,-8 26,-8 9,9"/>
+            <polygon fill="#17324D" points="9,9 26,-8 26,9"/>
+          </g>
+        </g>
+      </g>
+
+      <!-- trailing arm -->
+      <g transform="translate(-48 -28)">
+        <g transform="rotate(155)">
+          <polygon fill="#E85D75" points="0,-11 72,-11 0,11"/>
+          <polygon fill="#E85D75" points="0,11 72,-11 72,11"/>
+          <g transform="translate(70 0)">
+            <g transform="rotate(-28)">
+              <polygon fill="#E85D75" points="0,-10 65,-10 0,10"/>
+              <polygon fill="#E85D75" points="0,10 65,-10 65,10"/>
+            </g>
+          </g>
+        </g>
+      </g>
+
+      <!-- raised waving arm; the forearm rotates relative to the upper arm -->
+      <g transform="translate(48 -30)">
+        <g transform="rotate(-58)">
+          <polygon fill="#E85D75" points="0,-11 72,-11 0,11"/>
+          <polygon fill="#E85D75" points="0,11 72,-11 72,11"/>
+          <g transform="translate(70 0)">
+            <g transform="rotate(-48)">
+              <polygon fill="#E85D75" points="0,-10 62,-10 0,10"/>
+              <polygon fill="#E85D75" points="0,10 62,-10 62,10"/>
+              <g transform="translate(66 0)">
+                <g transform="scale(.42 .42)">
+                  <polygon fill="#F5C542" points="-30,-30 30,-30 -30,30"/>
+                  <polygon fill="#F5C542" points="-30,30 30,-30 30,30"/>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- rear leg, bent backward at the knee -->
+    <g transform="translate(-30 52)">
+      <g transform="rotate(30)">
+        <polygon fill="#7746A8" points="-12,0 12,0 -12,76"/>
+        <polygon fill="#7746A8" points="-12,76 12,0 12,76"/>
+        <g transform="translate(0 74)">
+          <g transform="rotate(55)">
+            <polygon fill="#7746A8" points="-11,0 11,0 -11,70"/>
+            <polygon fill="#7746A8" points="-11,70 11,0 11,70"/>
+            <g transform="translate(0 72)">
+              <g transform="rotate(-82)">
+                <polygon fill="#17324D" points="-10,0 10,0 -10,48"/>
+                <polygon fill="#17324D" points="-10,48 10,0 10,48"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+
+    <!-- forward leg, bent in the opposite direction -->
+    <g transform="translate(30 52)">
+      <g transform="rotate(-42)">
+        <polygon fill="#7746A8" points="-12,0 12,0 -12,78"/>
+        <polygon fill="#7746A8" points="-12,78 12,0 12,78"/>
+        <g transform="translate(0 76)">
+          <g transform="rotate(-38)">
+            <polygon fill="#7746A8" points="-11,0 11,0 -11,72"/>
+            <polygon fill="#7746A8" points="-11,72 11,0 11,72"/>
+            <g transform="translate(0 73)">
+              <g transform="rotate(80)">
+                <polygon fill="#17324D" points="-10,0 10,0 -10,50"/>
+                <polygon fill="#17324D" points="-10,50 10,0 10,50"/>
+              </g>
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -215,7 +215,39 @@
 		</p>
 
 		<h2>Task 3: Transforms</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			I implemented translation, scaling, and rotation as 3-by-3 matrices in
+			homogeneous coordinates. Translation stores its horizontal and vertical
+			offsets in the last column, scaling places the two scale factors on the
+			diagonal, and rotation uses sine and cosine after converting the input
+			angle from degrees to radians. Multiplying a point by these matrices
+			produces its transformed position, while multiplying matrices composes
+			multiple operations. Nested SVG groups therefore form a hierarchy in
+			which a child inherits all of its parent groups' transforms.
+		</p>
+
+		<p>
+			For my custom <a href="my_robot.svg"><code>my_robot.svg</code></a>, I
+			wanted Cubeman to look energetic rather than remain in the starter
+			pose, so I made him run toward the right while waving overhead. The
+			torso and head lean forward, one arm trails behind, and the raised arm
+			uses separate shoulder and elbow rotations to create the wave. Each leg
+			also has nested hip, knee, and foot transforms, which let the two legs
+			form opposite parts of a running stride. I changed the colors, added a
+			chest emblem, ground, and motion lines to make the direction and motion
+			more apparent.
+		</p>
+
+		<figure>
+			<img src="assets/task3-my-robot.png"
+				 alt="Cubeman running to the right while waving one arm overhead"
+				 style="width:100%; max-width:1200px"/>
+			<figcaption>
+				My transformed Cubeman running and waving, rendered from
+				<a href="my_robot.svg"><code>my_robot.svg</code></a> at the default
+				viewing parameters.
+			</figcaption>
+		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
