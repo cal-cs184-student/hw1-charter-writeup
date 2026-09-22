@@ -146,7 +146,73 @@
 		</p>
 		
 		<h2>Task 2: Antialiasing by Supersampling</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			Supersampling reduces aliasing by estimating how much of a pixel is
+			covered rather than making one binary decision for the entire pixel.
+			For a sample rate of <i>R</i>, I place
+			<code>sqrt(R) * sqrt(R)</code> samples on a regular grid within every
+			pixel. Each sample independently stores either the triangle color or
+			the previous background color. Averaging those samples produces an
+			intermediate edge color that approximates fractional pixel coverage.
+		</p>
+
+		<p>
+			I store the samples in <code>sample_buffer</code> as a row-major,
+			higher-resolution framebuffer. If the output is <i>W</i> by <i>H</i>
+			and there are <i>N</i> samples along each side of a pixel, the sample
+			buffer is <code>(W * N)</code> by <code>(H * N)</code>. I multiply the
+			triangle coordinates by <i>N</i> and run the scanline rasterizer on this
+			higher-resolution grid. A high-resolution sample at integer coordinates
+			<code>(sx, sy)</code> represents the screen-space location
+			<code>((sx + 0.5) / N, (sy + 0.5) / N)</code>.
+		</p>
+
+		<p>
+			Several parts of the rasterization pipeline changed. Both
+			<code>set_sample_rate()</code> and
+			<code>set_framebuffer_target()</code> resize the buffer to
+			<code>width * height * sample_rate</code> entries, and
+			<code>clear_buffers()</code> resets every sample before a redraw.
+			Triangles write individual subpixel samples. Points and lines are not
+			supersampled, so <code>fill_pixel()</code> writes their color to every
+			sample belonging to the selected output pixel. Finally,
+			<code>resolve_to_framebuffer()</code> averages each pixel's samples and
+			converts the floating-point color back to three 8-bit framebuffer
+			channels.
+		</p>
+
+		<div style="display: flex; gap: 12px; align-items: flex-start;">
+			<figure style="width: 33%; margin: 0;">
+				<img src="assets/task2-test4-rate1.png"
+					 alt="basic/test4.svg at sample rate 1"
+					 style="width:100%"/>
+				<figcaption>Sample rate 1 (1 by 1 grid)</figcaption>
+			</figure>
+			<figure style="width: 33%; margin: 0;">
+				<img src="assets/task2-test4-rate4.png"
+					 alt="basic/test4.svg at sample rate 4"
+					 style="width:100%"/>
+				<figcaption>Sample rate 4 (2 by 2 grid)</figcaption>
+			</figure>
+			<figure style="width: 33%; margin: 0;">
+				<img src="assets/task2-test4-rate16.png"
+					 alt="basic/test4.svg at sample rate 16"
+					 style="width:100%"/>
+				<figcaption>Sample rate 16 (4 by 4 grid)</figcaption>
+			</figure>
+		</div>
+
+		<p>
+			At sample rate 1, the single sample is either inside or outside the
+			triangle, so pixels along the thin magenta edge jump directly between
+			magenta and white and form a visible staircase. At sample rate 4, an
+			edge pixel can contain zero through four covered samples, producing
+			several intermediate colors. At sample rate 16, the sixteen samples
+			provide still finer coverage levels. In the pixel inspector, this can
+			be seen as additional partially colored cells along the boundary. These
+			intermediate colors make the triangle edge appear smoother even though
+			the final framebuffer has the same resolution in all three images.
+		</p>
 
 		<h2>Task 3: Transforms</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
