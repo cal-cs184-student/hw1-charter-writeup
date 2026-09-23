@@ -354,7 +354,71 @@
 		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			Pixel sampling chooses a color from a texture image for a sample on a
+			textured triangle. I first use the sample's barycentric coordinates to
+			interpolate the triangle's three texture coordinates. This produces a
+			normalized <code>(u, v)</code> location in the texture. The rasterizer
+			then asks the texture for a color at that location and stores the result
+			in the sample buffer.
+		</p>
+
+		<p>
+			For nearest-neighbor sampling, I convert <code>(u, v)</code> to full-resolution
+			texel coordinates, round to the closest texel, and return that texel's
+			color. This method needs only one texture lookup and preserves hard texel
+			boundaries, but it can look blocky or jagged. For bilinear sampling, I
+			find the four texels surrounding the texture position. I linearly blend
+			the top and bottom pairs in the horizontal direction, then blend those
+			two results vertically. Bilinear sampling costs four texture lookups but
+			produces smoother transitions when the sample falls between texel centers.
+			Both implementations clamp coordinates to the texture boundary.
+		</p>
+
+		<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+			<figure style="margin: 0;">
+				<img src="assets/task5-nearest-rate1.png"
+					 alt="Texture mapping with nearest sampling and one sample per pixel"
+					 style="width:100%"/>
+				<figcaption>Nearest sampling, 1 sample per pixel.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task5-nearest-rate16.png"
+					 alt="Texture mapping with nearest sampling and sixteen samples per pixel"
+					 style="width:100%"/>
+				<figcaption>Nearest sampling, 16 samples per pixel.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task5-bilinear-rate1.png"
+					 alt="Texture mapping with bilinear sampling and one sample per pixel"
+					 style="width:100%"/>
+				<figcaption>Bilinear sampling, 1 sample per pixel.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task5-bilinear-rate16.png"
+					 alt="Texture mapping with bilinear sampling and sixteen samples per pixel"
+					 style="width:100%"/>
+				<figcaption>Bilinear sampling, 16 samples per pixel.</figcaption>
+			</figure>
+		</div>
+
+		<p>
+			The nearest-sampled images show sharper steps between texels, especially
+			along high-contrast details and where the texture is viewed at an angle.
+			Bilinear sampling softens those steps by blending neighboring texels.
+			Increasing the sample rate from 1 to 16 mainly improves the triangle's
+			silhouette and other subpixel edges, while also averaging more texture
+			lookups near those edges. Bilinear sampling still produces smoother
+			transitions inside the textured surface.
+		</p>
+
+		<p>
+			The difference between nearest and bilinear sampling is largest when a
+			screen sample maps between texture texels, particularly in a texture with
+			high-frequency or high-contrast content. The methods appear more similar
+			when the texture is magnified enough that large regions map near texel
+			centers, or when neighboring texels already have similar colors.
+		</p>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
