@@ -319,7 +319,39 @@
 		</figure>
 
 		<h2>Task 4: Barycentric coordinates</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			Barycentric coordinates describe a point using three weights, one for
+			each vertex of a triangle. I call the weights \(\alpha\), \(\beta\),
+			and \(\gamma\), and they always add to one. At the first vertex the
+			weights are \((1, 0, 0)\), at the second they are \((0, 1, 0)\), and
+			at the third they are \((0, 0, 1)\). Moving through the triangle changes
+			the weights linearly. A point on an edge has a zero weight for the
+			opposite vertex, while a point inside the triangle has three
+			nonnegative weights.
+		</p>
+
+		<p>
+			For every sample, I calculate the three weights from signed triangle
+			area ratios. The interpolated color is
+			\[C(p) = \alpha C_0 + \beta C_1 + \gamma C_2.\]
+			This means the color exactly matches a vertex color at that vertex and
+			becomes a proportional blend everywhere between the vertices. I use the
+			same weights for the point-in-triangle test: if all three are
+			nonnegative, the sample is covered. Degenerate triangles are skipped,
+			and the bounding box is clipped to the framebuffer before sampling.
+		</p>
+
+		<figure>
+			<img src="assets/task4-test7-color-wheel.png"
+				 alt="Color wheel rendered from barycentrically interpolated triangles"
+				 style="width:100%; max-width:1200px"/>
+			<figcaption>
+				<code>svg/basic/test7.svg</code> at the default view and sample rate 1.
+				The wheel is built from many narrow triangles that share the black
+				center. Barycentric interpolation blends each triangle's center and
+				outer vertex colors, producing smooth transitions within every wedge.
+			</figcaption>
+		</figure>
 
 		<h2>Task 5: "Pixel sampling" for texture mapping</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
