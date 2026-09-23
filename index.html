@@ -421,7 +421,104 @@
 		</p>
 
 		<h2>Task 6: "Level Sampling" with mipmaps for texture mapping</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			Level sampling chooses a mipmap resolution that is close to the texture's
+			projected size on the screen. A distant or strongly compressed surface can
+			map one screen pixel across many texels. Sampling only the original image
+			would select too little of that detail and cause aliasing. A mipmap stores
+			progressively filtered images at half the width and height, so the
+			rasterizer can sample a level whose texels represent an appropriate area
+			of the original texture.
+		</p>
+
+		<p>
+			For each covered sample, I interpolate texture coordinates at
+			<code>(x, y)</code>, <code>(x + 1, y)</code>, and
+			<code>(x, y + 1)</code>. In <code>get_level()</code>, I subtract the
+			center coordinate from its two neighbors and scale the resulting
+			derivatives by the full-resolution texture width and height. I take the
+			larger length of the horizontal and vertical derivative vectors as the
+			texture footprint, ρ, and calculate
+			<code>level = max(0, log2(ρ))</code>.
+		</p>
+
+		<p>
+			With <code>L_ZERO</code>, I always sample the original texture. With
+			<code>L_NEAREST</code>, I round the computed level and sample the closest
+			mipmap. With <code>L_LINEAR</code>, I sample the mip levels immediately
+			above and below the continuous level and blend between them. The pixel
+			sampling method is independent: either nearest-neighbor or bilinear
+			sampling can be used at each chosen level. Combining bilinear pixel
+			sampling with linear level sampling gives trilinear filtering.
+		</p>
+
+		<h3>Sampling tradeoffs</h3>
+		<ul>
+			<li>
+				<b>Pixel sampling:</b> nearest sampling uses one texel lookup and is
+				fast, but can look blocky. Bilinear sampling uses four lookups and is
+				better at smoothing magnified texel boundaries.
+			</li>
+			<li>
+				<b>Level sampling:</b> <code>L_ZERO</code> has no mip-selection work but
+				aliases badly during minification. <code>L_NEAREST</code> selects one
+				mipmap and greatly improves minification. <code>L_LINEAR</code> reads two
+				levels and removes abrupt transitions between them, at additional cost.
+				A complete mipmap uses about one third more texture memory than its base
+				image.
+			</li>
+			<li>
+				<b>Supersampling:</b> increasing the sample rate helps both geometric
+				edges and texture detail because the renderer evaluates more locations
+				inside every pixel. It also multiplies rasterization work and sample-buffer
+				memory by the sample rate, so mipmaps are usually a more efficient way to
+				combat texture minification.
+			</li>
+		</ul>
+
+		<p>
+			For these comparisons, I used the Cubeman image I created for Task 3 as a
+			custom PNG texture and mapped it onto the provided perspective-like
+			textured mesh. The tilted, compressed regions make the effects of level
+			sampling visible. All four images use one sample per pixel.
+		</p>
+
+		<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+			<figure style="margin: 0;">
+				<img src="assets/task6-lzero-nearest.png"
+					 alt="Custom Cubeman texture with zero-level and nearest-pixel sampling"
+					 style="width:100%"/>
+				<figcaption><code>L_ZERO</code> + <code>P_NEAREST</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-lzero-bilinear.png"
+					 alt="Custom Cubeman texture with zero-level and bilinear-pixel sampling"
+					 style="width:100%"/>
+				<figcaption><code>L_ZERO</code> + <code>P_LINEAR</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-lnearest-nearest.png"
+					 alt="Custom Cubeman texture with nearest-level and nearest-pixel sampling"
+					 style="width:100%"/>
+				<figcaption><code>L_NEAREST</code> + <code>P_NEAREST</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-lnearest-bilinear.png"
+					 alt="Custom Cubeman texture with nearest-level and bilinear-pixel sampling"
+					 style="width:100%"/>
+				<figcaption><code>L_NEAREST</code> + <code>P_LINEAR</code>.</figcaption>
+			</figure>
+		</div>
+
+		<p>
+			The two <code>L_ZERO</code> results retain the finest source detail even
+			where many texels project into a small screen area, which creates broken
+			edges and high-frequency speckling. Bilinear pixel sampling softens nearby
+			texels but cannot fully solve this minification problem. The
+			<code>L_NEAREST</code> results use prefiltered mip levels in the compressed
+			regions, noticeably reducing that aliasing. Combining the selected mip
+			level with bilinear pixel sampling gives the smoothest result of these four.
+		</p>
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
