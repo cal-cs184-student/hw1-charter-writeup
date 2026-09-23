@@ -214,6 +214,43 @@
 			the final framebuffer has the same resolution in all three images.
 		</p>
 
+		<h3>Extra Credit: Jittered Supersampling</h3>
+		<p>
+			I added deterministic jittered sampling as an alternative to the regular
+			grid. I still divide each pixel into an <i>N</i>-by-<i>N</i> grid, but I
+			move each sample from the center of its cell to a pseudo-random position
+			inside that same cell. The random offset is generated from the pixel and
+			sample indices, so it remains identical every time the scene is redrawn.
+			This keeps the useful coverage of stratified sampling without producing
+			flicker. Pressing <code>J</code> switches between the grid and jittered
+			patterns.
+		</p>
+
+		<div style="display: flex; gap: 12px; align-items: flex-start;">
+			<figure style="width: 50%; margin: 0;">
+				<img src="assets/task2-grid-sampling.png"
+					 alt="Regular grid supersampling on basic test4"
+					 style="width:100%"/>
+				<figcaption>Regular 4-by-4 grid sampling</figcaption>
+			</figure>
+			<figure style="width: 50%; margin: 0;">
+				<img src="assets/task2-jittered-sampling.png"
+					 alt="Jittered supersampling on basic test4"
+					 style="width:100%"/>
+				<figcaption>Jittered 4-by-4 sampling</figcaption>
+			</figure>
+		</div>
+
+		<p>
+			Both images use sixteen samples per pixel and place the pixel inspector
+			over the same diagonal green edge. The regular grid creates a repeating,
+			structured pattern of partial coverage because neighboring pixels test
+			the edge at identical offsets. Jittering breaks up that alignment, so the
+			coverage changes are less regularly correlated across the edge. The full
+			images remain similar because both methods are stratified, while the
+			magnified pixels reveal the different sampling patterns.
+		</p>
+
 		<h2>Task 3: Transforms</h2>
 		<p>
 			I implemented translation, scaling, and rotation as 3-by-3 matrices in
