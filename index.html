@@ -286,6 +286,38 @@
 			</figcaption>
 		</figure>
 
+		<h3>Extra Credit: Viewport Rotation</h3>
+		<p>
+			I added two keyboard controls for rotating the entire viewport. Pressing
+			<code>[</code> rotates it by negative 10 degrees, and pressing
+			<code>]</code> rotates it by positive 10 degrees. I store the angle
+			separately for every loaded SVG, which lets the existing pan and zoom
+			matrix remain unchanged. Pressing the space bar restores the default
+			view and resets the angle to zero.
+		</p>
+
+		<p>
+			The SVG-to-NDC matrix first centers and scales the SVG into the unit
+			square. I insert the viewport rotation after that step and before the
+			NDC-to-screen matrix. To rotate around the center rather than the NDC
+			origin, the new matrix is
+			<code>T(0.5, 0.5) * R(angle) * T(-0.5, -0.5)</code>. The complete
+			transform is therefore
+			<code>NDC-to-screen * centered rotation * SVG-to-NDC</code>. I use the
+			same composed matrix for the SVG and its canvas outline, so they rotate
+			together while the screen framebuffer stays fixed.
+		</p>
+
+		<figure>
+			<img src="assets/task3-viewport-rotation.png"
+				 alt="Robot SVG with the viewport rotated by 30 degrees"
+				 style="width:100%; max-width:1200px"/>
+			<figcaption>
+				The original robot and its canvas after three presses of
+				<code>]</code>, producing a 30-degree viewport rotation.
+			</figcaption>
+		</figure>
+
 		<h2>Task 4: Barycentric coordinates</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
