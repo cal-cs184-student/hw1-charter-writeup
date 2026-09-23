@@ -520,6 +520,117 @@
 			level with bilinear pixel sampling gives the smoothest result of these four.
 		</p>
 
+		<h3>Extra Credit: Anisotropic Filtering</h3>
+		<p>
+			Isotropic mipmapping represents a pixel's texture footprint with one
+			number. It uses the longer of the two screen-space texture derivatives to
+			choose a square filtering region. This prevents aliasing, but it can blur
+			the other direction too much when a surface is viewed at a steep angle and
+			the footprint is long and narrow.
+		</p>
+
+		<p>
+			My anisotropic filter keeps the two derivative lengths separate. The
+			shorter length selects a continuous mip level, while the longer derivative
+			provides the direction and extent of a line through the footprint. I place
+			between one and eight evenly spaced samples along that line. Each sample is
+			filtered between adjacent mip levels and the resulting colors are averaged.
+			For a footprint requiring more than eight samples, I select a slightly
+			coarser mip level so the eight samples still cover its full length. This is
+			a deliberately small implementation of the main anisotropic-filtering idea:
+			filter more in the direction that is more compressed while retaining detail
+			in the perpendicular direction.
+		</p>
+
+		<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
+			<figure style="margin: 0;">
+				<img src="assets/task6-lzero-nearest.png"
+					 alt="Custom Cubeman texture with nearest sampling"
+					 style="width:100%"/>
+				<figcaption>Nearest: <code>L_ZERO</code> + <code>P_NEAREST</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-lzero-bilinear.png"
+					 alt="Custom Cubeman texture with bilinear sampling"
+					 style="width:100%"/>
+				<figcaption>Bilinear: <code>L_ZERO</code> + <code>P_LINEAR</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-trilinear.png"
+					 alt="Custom Cubeman texture with trilinear sampling"
+					 style="width:100%"/>
+				<figcaption>Trilinear: <code>L_LINEAR</code> + <code>P_LINEAR</code>.</figcaption>
+			</figure>
+			<figure style="margin: 0;">
+				<img src="assets/task6-anisotropic.png"
+					 alt="Custom Cubeman texture with anisotropic filtering"
+					 style="width:100%"/>
+				<figcaption>Eight-tap anisotropic filtering + <code>P_LINEAR</code>.</figcaption>
+			</figure>
+		</div>
+
+		<p>
+			Nearest sampling has the sharpest aliasing, and bilinear sampling only
+			smooths the immediate texel neighborhood. Trilinear filtering removes most
+			of the minification artifacts, but its square footprint softens details in
+			both directions. The anisotropic result remains stable in the stretched
+			regions while keeping edges and narrow colored shapes more distinct along
+			the less-compressed direction.
+		</p>
+
+		<p>
+			I measured the filtering functions in a Release build using
+			<code>clock()</code>. Each run performed 500,000 samples from a 1024-by-1024
+			texture with a 32-texel horizontal footprint and a 2-texel vertical
+			footprint. The values below are averages of ten runs after one warm-up run.
+			This isolates texture-filtering cost from SVG parsing and screen display.
+		</p>
+
+		<table style="width: 100%; border-collapse: collapse;">
+			<thead>
+				<tr>
+					<th style="border: 1px solid #999; padding: 8px; text-align: left;">Filtering method</th>
+					<th style="border: 1px solid #999; padding: 8px;">Time for 500,000 samples</th>
+					<th style="border: 1px solid #999; padding: 8px;">Relative to nearest</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Nearest</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">4.330 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.00x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Bilinear</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">9.480 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">2.19x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Nearest mip level</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">7.946 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">1.84x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Trilinear</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">15.451 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">3.57x</td>
+				</tr>
+				<tr>
+					<td style="border: 1px solid #999; padding: 8px;">Eight-tap anisotropic</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">85.406 ms</td>
+					<td style="border: 1px solid #999; padding: 8px; text-align: center;">19.72x</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<p>
+			The anisotropic method is the slowest because this deliberately clear
+			implementation may evaluate eight trilinear samples, or up to 64 texel
+			lookups, for one output sample. Its benefit is strongest for oblique,
+			directionally compressed texture mappings where ordinary mipmapping loses
+			useful detail.
+		</p>
+
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
