@@ -534,16 +534,15 @@
 		</p>
 
 		<p>
-			My anisotropic filter keeps the two derivative lengths separate. The
-			shorter length selects a continuous mip level, while the longer derivative
-			provides the direction and extent of a line through the footprint. I place
-			between one and eight evenly spaced samples along that line. Each sample is
-			filtered between adjacent mip levels and the resulting colors are averaged.
-			For a footprint requiring more than eight samples, I select a slightly
-			coarser mip level so the eight samples still cover its full length. This is
-			a deliberately small implementation of the main anisotropic-filtering idea:
-			filter more in the direction that is more compressed while retaining detail
-			in the perpendicular direction.
+			My anisotropic filter is a lightweight approximation that compares the
+			texel-space lengths of the one-pixel x and y UV derivatives and uses the
+			longer derivative as a line through the texture footprint. The shorter
+			length determines the mip level. I place 1 - 8 evenly spaced samples along
+			the longer direction and average their colors. If the footprint would
+			require more than eight samples, I choose a coarser mip level so that eight
+			samples can still cover it. This works well for the oblique mappings in
+			this assignment, although it does not calculate the true principal axes of
+			a general skewed texture footprint.
 		</p>
 
 		<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px;">
