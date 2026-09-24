@@ -632,7 +632,57 @@
 		</p>
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		<p>
+			For my creative submission, I made a geometric recreation of the
+			<i>Princess Mononoke</i> poster. I preserved the main composition from the
+			reference: San stands in the foreground with her dagger and mask while a
+			large white wolf fills the background. I adapted the original portrait
+			layout into a square 800-by-800 composition and used a dark forest palette
+			to keep the pale wolf and San's red face paint visually prominent.
+		</p>
+
+		<figure>
+			<img src="assets/task7-competition.png"
+				 alt="Geometric Princess Mononoke poster recreation with San and a large white wolf"
+				 width="800" height="800" style="width:100%; max-width:800px"/>
+			<figcaption>
+				My final <code>competition.svg</code>, rendered at 800 by 800 pixels
+				with 16 samples per pixel and saved using the viewer's <code>S</code> key.
+			</figcaption>
+		</figure>
+
+		<p>
+			I generated the SVG with
+			<code>src/generate_competition.py</code>. The script builds the picture from
+			back to front. Two interpolated-color triangles form the dark background,
+			then deterministic clusters of angular leaves and tree trunks create the
+			forest. The wolf is assembled from one large jagged silhouette followed by
+			separate polygon facets for its ears, forehead, eyes, muzzle, nose, shadows,
+			and thin fur markings. Layering several gray and off-white values makes the
+			wolf readable without requiring outlines around every shape.
+		</p>
+
+		<p>
+			San is constructed from larger polygons for her hair, skin, fur mantle,
+			tunic, arms, and skirt, followed by smaller facial and clothing details. I
+			used asymmetrical eyes and cheeks, moved the nose and mouth slightly away
+			from the center, and applied a small rotation to the head group to suggest
+			the three-quarter pose in the reference. The neutral mouth and inward-facing
+			eyebrows give her a serious expression. The teeth in the necklace are
+			individually rotated along a curved cord, and the red mask is layered over a
+			jagged white pelt. The dagger uses a long polygonal blade with its red marks
+			placed close to the handle.
+		</p>
+
+		<p>
+			The rasterizer does not support SVG path elements or normal font rendering,
+			so every curved-looking feature is actually a many-sided polygon. I also
+			created the title from a small five-by-seven bitmap alphabet, drawing every
+			visible letter cell as a rectangle. My workflow was to regenerate the SVG,
+			render it at 800 by 800 pixels, inspect the result, and adjust coordinates,
+			layer order, and colors. The final image uses only supported rectangles,
+			polygons, groups, transforms, and interpolated-color triangles.
+		</p>
 
 		<h2>Additional Notes (please remove)</h2>
 		<ul>
