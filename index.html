@@ -61,23 +61,22 @@
 
 		<p>
 			I begin with the smallest axis-aligned bounding box containing the
-			triangle and clip that box to the framebuffer. I then process the box
+			triangle. I clip that box to the framebuffer and then process the box
 			one scanline at a time. On each row, the three edge inequalities give
-			me the first and last covered pixel. Since a triangle is convex, every
-			pixel between those endpoints is covered, so I fill that span using
-			<code>fill_pixel()</code>.
+			the first and last covered pixel. Since triangles are convex, every
+			pixel between those endpoints is covered. Finally I fill that interval
+			in the sample buffer.
 		</p>
 
 		<p>
-			This algorithm is no worse than testing every sample in the bounding
-			box. If the clipped box is <i>W</i> pixels wide and <i>H</i> pixels
-			high, a basic bounding-box implementation performs
-			<code>W * H</code> point-in-triangle tests. My implementation does a
-			constant amount of work for the three edges on each of the <i>H</i>
-			rows and fills <i>K</i> covered pixels, giving
-			<code>O(H + K)</code> work. Since <code>K &lt;= W * H</code>, this
-			avoids point-in-triangle tests for uncovered samples while remaining
-			within the work bound of bounding-box rasterization.
+			In asymptotic worst case this algorithm is equivalent to testing every
+			sample in the bounding box. If the clipped box is <i>W</i> pixels wide
+			and <i>H</i> pixels high, a basic bounding-box implementation performs
+			<code>W * H</code> point-in-triangle tests. My implementation does
+			<code>O(H + K)</code> work for the three edges on each of the <i>H</i>
+			rows and fills <i>K</i> covered pixels. <code>K &lt;= W * H</code> so
+			this avoids point-in-triangle tests for uncovered samples while
+			remaining within the work bound of bounding-box rasterization.
 		</p>
 
 		<figure>
