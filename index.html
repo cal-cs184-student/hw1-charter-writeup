@@ -636,12 +636,10 @@
 
 		<h2>(Optional) Task 7: Extra Credit - Draw Something Creative!</h2>
 		<p>
-			For my creative submission, I made a geometric recreation of the
-			<i>Princess Mononoke</i> poster. I preserved the main composition from the
-			reference: San stands in the foreground with her dagger and mask while a
-			large white wolf fills the background. I adapted the original portrait
-			layout into a square 800-by-800 composition and used a dark forest palette
-			to keep the pale wolf and San's red face paint visually prominent.
+			I really like <i>Princess Mononoke</i>, so I wanted to recreate the movie
+			poster. I adapted the original portrait layout into a square 800-by-800
+			composition and chose a simple geometric background to serve as the
+			poster's dark forest.
 		</p>
 
 		<figure>
@@ -655,26 +653,19 @@
 		</figure>
 
 		<p>
-			I generated the SVG with
-			<code>src/generate_competition.py</code>. The script builds the picture from
-			back to front. Two interpolated-color triangles form the dark background,
-			then deterministic clusters of angular leaves and tree trunks create the
+			The SVG was generated with <code>src/generate_competition.py</code>, which
+			builds the picture from back to front. Two dark green triangles form the
+			background, and clusters of angular leaves and tree trunks create the
 			forest. The wolf is assembled from one large jagged silhouette followed by
-			separate polygon facets for its ears, forehead, eyes, muzzle, nose, shadows,
-			and thin fur markings. Layering several gray and off-white values makes the
-			wolf readable without requiring outlines around every shape.
+			separate polygon facets for its ears, facial features, etc.
 		</p>
 
 		<p>
-			San is constructed from larger polygons for her hair, skin, fur mantle,
-			tunic, arms, and skirt, followed by smaller facial and clothing details. I
-			used asymmetrical eyes and cheeks, moved the nose and mouth slightly away
-			from the center, and applied a small rotation to the head group to suggest
-			the three-quarter pose in the reference. The neutral mouth and inward-facing
-			eyebrows give her a serious expression. The teeth in the necklace are
-			individually rotated along a curved cord, and the red mask is layered over a
-			jagged white pelt. The dagger uses a long polygonal blade with its red marks
-			placed close to the handle.
+			I constructed San with larger polygons for larger parts like hair, skin,
+			arms, and clothing, and used smaller polygons for facial and clothing
+			details. The teeth in the necklace are individually rotated along a curved
+			cord, and the red mask is layered over a jagged white pelt. The dagger uses
+			a long polygonal blade with blood marks.
 		</p>
 
 		<p>
@@ -683,20 +674,9 @@
 			created the title from a small five-by-seven bitmap alphabet, drawing every
 			visible letter cell as a rectangle. My workflow was to regenerate the SVG,
 			render it at 800 by 800 pixels, inspect the result, and adjust coordinates,
-			layer order, and colors. The final image uses only supported rectangles,
-			polygons, groups, transforms, and interpolated-color triangles.
+			layer order, and colors. The final image uses only supported shapes,
+			groups, and transforms.
 		</p>
-
-		<h2>Additional Notes (please remove)</h2>
-		<ul>
-			<li>You can also add code if you'd like as so: <code>code code code</code></li>
-			<li>If you'd like to add math equations, 
-				<ul>
-					<li>You can write inline equations like so: \( a^2 + b^2 = c^2 \)</li>
-					<li>You can write display equations like so: \[ a^2 + b^2 = c^2 \]</li>
-				</ul>
-			</li>
-		</ul>
 		</div>
 	</body>
 </html>
